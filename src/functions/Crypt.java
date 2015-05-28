@@ -81,7 +81,7 @@ public class Crypt {
 	private void initialize() {
 		frmFileCrypt = new JFrame();
 		frmFileCrypt.setIconImage(Toolkit.getDefaultToolkit().getImage(Crypt.class.getResource("/resources/lock.png")));
-		frmFileCrypt.setTitle("File Crypt - by zero334");
+		frmFileCrypt.setTitle("Easy Crypt - by zero334");
 		frmFileCrypt.setBounds(100, 100, 450, 300);
 		frmFileCrypt.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmFileCrypt.getContentPane().setLayout(null);
