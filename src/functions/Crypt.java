@@ -15,9 +15,10 @@ import javax.swing.JTextArea;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JRadioButton;
-
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +41,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.JCheckBox;
 
 
 public class Crypt {
@@ -86,16 +88,20 @@ public class Crypt {
 		frmFileCrypt.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmFileCrypt.getContentPane().setLayout(null);
 		
+		// Password lable
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setBounds(13, 14, 67, 14);
 		frmFileCrypt.getContentPane().add(lblPassword);
 		
+		// Password field
 		passwordField = new JPasswordField();
+		final char darkCircle = 0x25cf;
+		passwordField.setEchoChar(darkCircle);
 		passwordField.setBounds(90, 11, 334, 20);
 		frmFileCrypt.getContentPane().add(passwordField);
 		
+		// Start btn
 		btnStart = new JButton("En/De Crypt");
-		
 		btnStart.setToolTipText("Start the crypting process");
 		btnStart.setBounds(140, 228, 154, 23);
 		frmFileCrypt.getContentPane().add(btnStart);
@@ -121,6 +127,23 @@ public class Crypt {
 		ButtonGroup btnGroupEnDeCrypt = new ButtonGroup();
 		btnGroupEnDeCrypt.add(rdbtnEncrypt);
 		btnGroupEnDeCrypt.add(rdbtnDecrypt);
+		
+		JCheckBox chckbxShowPassword = new JCheckBox("Show Password");
+		chckbxShowPassword.addItemListener(new ItemListener() {
+		    public void itemStateChanged(ItemEvent e) {
+		        if (e.getStateChange() == ItemEvent.SELECTED) {
+		        	passwordField.setEchoChar((char) 0);
+		        } else {
+		        	final char darkCircle = 0x25cf;
+		        	passwordField.setEchoChar(darkCircle); // Default dark circle
+		        }
+		    }
+		});
+		
+		
+		
+		chckbxShowPassword.setBounds(185, 38, 121, 23);
+		frmFileCrypt.getContentPane().add(chckbxShowPassword);
 		
 	}
 	
