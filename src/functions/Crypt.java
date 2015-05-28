@@ -110,11 +110,11 @@ public class Crypt {
 		
 		rdbtnEncrypt = new JRadioButton("Encrypt");
 		rdbtnEncrypt.setSelected(true);
-		rdbtnEncrypt.setBounds(90, 48, 109, 23);
+		rdbtnEncrypt.setBounds(13, 35, 76, 23);
 		frmFileCrypt.getContentPane().add(rdbtnEncrypt);
 		
 		JRadioButton rdbtnDecrypt = new JRadioButton("Decrypt");
-		rdbtnDecrypt.setBounds(201, 48, 109, 23);
+		rdbtnDecrypt.setBounds(13, 61, 76, 23);
 		frmFileCrypt.getContentPane().add(rdbtnDecrypt);
 		
 		
@@ -262,14 +262,10 @@ public class Crypt {
 					fos.close();
 					System.out.println("File Decrypted.");
 					
-					} catch (IOException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InvalidAlgorithmParameterException e) {
+					} catch (IOException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
 				}
 					
 			}
