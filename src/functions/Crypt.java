@@ -114,8 +114,8 @@ public class Crypt {
 		
 		txtDragYourFile = new JTextArea();
 		txtDragYourFile.setForeground(Color.DARK_GRAY);
-		txtDragYourFile.setFont(new Font("Calibri Light", Font.PLAIN, 53));
-		txtDragYourFile.setText("Drag your file here");
+		txtDragYourFile.setFont(new Font("Calibri Light", Font.PLAIN, 25));
+		txtDragYourFile.setText("Drag your file into the field");
 		txtDragYourFile.setToolTipText("Drag your file here");
 		txtDragYourFile.setEditable(false);
 		txtDragYourFile.setBounds(13, 91, 411, 101);
@@ -124,12 +124,12 @@ public class Crypt {
 		rdbtnEncrypt = new JRadioButton("Encrypt");
 		rdbtnEncrypt.setBackground(Color.GRAY);
 		rdbtnEncrypt.setSelected(true);
-		rdbtnEncrypt.setBounds(13, 35, 76, 23);
+		rdbtnEncrypt.setBounds(13, 35, 100, 23);
 		frmFileCrypt.getContentPane().add(rdbtnEncrypt);
 		
 		JRadioButton rdbtnDecrypt = new JRadioButton("Decrypt");
 		rdbtnDecrypt.setBackground(Color.GRAY);
-		rdbtnDecrypt.setBounds(13, 61, 76, 23);
+		rdbtnDecrypt.setBounds(13, 61, 100, 23);
 		frmFileCrypt.getContentPane().add(rdbtnDecrypt);
 		
 		
@@ -151,7 +151,7 @@ public class Crypt {
 		});
 		
 		
-		chckbxShowPassword.setBounds(185, 38, 121, 23);
+		chckbxShowPassword.setBounds(185, 38, 133, 23);
 		frmFileCrypt.getContentPane().add(chckbxShowPassword);
 		
 		progressBar = new JProgressBar();
