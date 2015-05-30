@@ -90,7 +90,7 @@ public class Crypt {
 		frmFileCrypt.setResizable(false);
 		frmFileCrypt.setIconImage(Toolkit.getDefaultToolkit().getImage(Crypt.class.getResource("/resources/lock.png")));
 		frmFileCrypt.setTitle("Easy Crypt - by zero334");
-		frmFileCrypt.setBounds(100, 100, 450, 300);
+		frmFileCrypt.setBounds(100, 100, 444, 300);
 		frmFileCrypt.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmFileCrypt.getContentPane().setLayout(null);
 		
