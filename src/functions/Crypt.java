@@ -44,6 +44,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JCheckBox;
 import javax.swing.JProgressBar;
+import java.awt.Color;
 
 
 public class Crypt {
@@ -85,6 +86,7 @@ public class Crypt {
 	 */
 	private void initialize() {
 		frmFileCrypt = new JFrame();
+		frmFileCrypt.getContentPane().setBackground(Color.GRAY);
 		frmFileCrypt.setResizable(false);
 		frmFileCrypt.setIconImage(Toolkit.getDefaultToolkit().getImage(Crypt.class.getResource("/resources/lock.png")));
 		frmFileCrypt.setTitle("Easy Crypt - by zero334");
@@ -119,11 +121,13 @@ public class Crypt {
 		frmFileCrypt.getContentPane().add(txtDragYourFile);
 		
 		rdbtnEncrypt = new JRadioButton("Encrypt");
+		rdbtnEncrypt.setBackground(Color.GRAY);
 		rdbtnEncrypt.setSelected(true);
 		rdbtnEncrypt.setBounds(13, 35, 76, 23);
 		frmFileCrypt.getContentPane().add(rdbtnEncrypt);
 		
 		JRadioButton rdbtnDecrypt = new JRadioButton("Decrypt");
+		rdbtnDecrypt.setBackground(Color.GRAY);
 		rdbtnDecrypt.setBounds(13, 61, 76, 23);
 		frmFileCrypt.getContentPane().add(rdbtnDecrypt);
 		
@@ -133,6 +137,7 @@ public class Crypt {
 		btnGroupEnDeCrypt.add(rdbtnDecrypt);
 		
 		JCheckBox chckbxShowPassword = new JCheckBox("Show Password");
+		chckbxShowPassword.setBackground(Color.GRAY);
 		chckbxShowPassword.addItemListener(new ItemListener() {
 		    public void itemStateChanged(ItemEvent e) {// Show or hide Password
 		        if (e.getStateChange() == ItemEvent.SELECTED) {
