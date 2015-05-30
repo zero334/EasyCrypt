@@ -7,8 +7,6 @@ public class ExtensionFinder {
  
 	public static String findExtention(String path, String extention) {
 
-		
-		
 			File file = new File(path);
 
 			if (file.exists()) {

@@ -43,6 +43,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JCheckBox;
+import javax.swing.JProgressBar;
 
 
 public class Crypt {
@@ -52,6 +53,7 @@ public class Crypt {
 	private JButton btnStart;
 	private JRadioButton rdbtnEncrypt;
 	private JPasswordField passwordField;
+	private JProgressBar progressBar;
 	
 	/**
 	 * Launch the application.
@@ -143,10 +145,13 @@ public class Crypt {
 		});
 		
 		
-		
 		chckbxShowPassword.setBounds(185, 38, 121, 23);
 		frmFileCrypt.getContentPane().add(chckbxShowPassword);
 		
+		progressBar = new JProgressBar();
+		progressBar.setBounds(13, 203, 411, 14);
+		progressBar.setStringPainted(true);
+		frmFileCrypt.getContentPane().add(progressBar);
 	}
 	
 	
@@ -166,8 +171,15 @@ public class Crypt {
 	      }
 	  });
 	}
-	
-	
+
+
+	private void updateStatusBar(String info, int progress) {
+		progressBar.setString(info);
+		progressBar.setValue(progress);
+		progressBar.paint(progressBar.getGraphics());
+	}
+
+
 	private void crypt() {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -178,23 +190,33 @@ public class Crypt {
 				// Check if En or Decrypt
 				if (rdbtnEncrypt.isSelected()) {
 					try {
-						// file to be encrypted
+						
+						//STATUS
+						updateStatusBar("Starting encryption", 10);
+						
+						
+						// File to be encrypted
 						FileInputStream inFile;
 						
 						inFile = new FileInputStream(filePath);
+						
+						
+						//STATUS
+						updateStatusBar("Getting file", 20);
+						
 						
 						// Get Name of the file
 						File file = new File(filePath);
 						String fileName = file.getName();
 						fileName += ".des";
-						
+
 						// encrypted file
 						FileOutputStream outFile = new FileOutputStream(fileName);
-	
+
+						//STATUS
+						updateStatusBar("Generating salt", 30);
+						
 						// salt is used for encoding
-						// writing it to a file
-						// salt should be transferred to the recipient securely
-						// for decryption
 						byte[] salt = new byte[8];
 						SecureRandom secureRandom = new SecureRandom();
 						secureRandom.nextBytes(salt);
@@ -206,21 +228,29 @@ public class Crypt {
 						KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
 						SecretKey secretKey = factory.generateSecret(keySpec);
 						SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
-	
-						//
+
+
 						Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 						cipher.init(Cipher.ENCRYPT_MODE, secret);
 						AlgorithmParameters params = cipher.getParameters();
-	
+
+
 						// iv adds randomness to the text and just makes the mechanism more
 						// secure
 						// used while initializing the cipher
 						// file to store the iv
+						
+						//STATUS
+						updateStatusBar("Generating iv", 40);
+						
 						FileOutputStream ivOutFile = new FileOutputStream("iv.enc");
 						byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 						ivOutFile.write(iv);
 						ivOutFile.close();
 	
+						//STATUS
+						updateStatusBar("Starting File encryption - this may take some time", 50);
+						
 						//file encryption
 						byte[] input = new byte[64];
 						int bytesRead;
@@ -235,18 +265,23 @@ public class Crypt {
 						if (output != null) {
 							outFile.write(output);
 						}
-							
-	
+						
+						//STATUS
+						updateStatusBar("Cleaning up", 60);
+						
 						inFile.close();
 						outFile.flush();
 						outFile.close();
 						
-						System.out.println("File Encrypted.");
+						//STATUS
+						updateStatusBar("Packing files - this may take some time", 75);
 						
 						// Add file to archive
 						String[] filesToZip = {fileName, "salt.enc", "iv.enc"};
 						Zip.zip(filesToZip, "");
-					
+						
+						//STATUS
+						updateStatusBar("Sucess! Crypted file: crypted.crpt", 100);
 					
 					} catch (IOException | IllegalBlockSizeException | BadPaddingException | InvalidParameterSpecException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException e) {
 						// TODO Auto-generated catch block
@@ -257,79 +292,100 @@ public class Crypt {
 				} else {
 					try {
 						
-					String execPath = System.getProperty("user.dir"); // Get execution path
+						//STATUS
+						updateStatusBar("Starting decryption", 10);
+						
+						String execPath = System.getProperty("user.dir"); // Get execution path
 
-					// Unzip files
-					Zip.unZip(filePath, execPath);
-					
-					// Get full file name
-					String fullName = ExtensionFinder.findExtention(execPath, ".des");
-					// Extract name - cut .des
-					String[] words = fullName.split("\\.");
-					final int wordsLength = words.length - 1;
-					int buffer = 0;
-					String finalFileName = "";
-					while (buffer < wordsLength) {
-						finalFileName += words[buffer] + '.';
-						buffer++;
-					}
-					
-					// Delete last character if it is a '.'
-					if (finalFileName.length() > 0 && finalFileName.charAt(finalFileName.length() - 1) == '.') {
-						finalFileName = finalFileName.substring(0, finalFileName.length() - 1);
-					}
-					
-					
-					System.out.println("Num: " + finalFileName);
-					
-					
-					// reading the salt
-					FileInputStream saltFis = new FileInputStream("salt.enc");
-					byte[] salt = new byte[8];
-					saltFis.read(salt);
-					saltFis.close();
-
-					// reading the iv
-					FileInputStream ivFis = new FileInputStream("iv.enc");
-					byte[] iv = new byte[16];
-					ivFis.read(iv);
-					ivFis.close();
-
-					SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-					KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-					SecretKey tmp = factory.generateSecret(keySpec);
-					SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-
-					// file decryption
-					Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-					cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
-					FileInputStream fis = new FileInputStream(finalFileName + ".des");
-					FileOutputStream fos = new FileOutputStream(finalFileName);
-					byte[] in = new byte[64];
-					int read;
-					while ((read = fis.read(in)) != -1) {
-						byte[] output = cipher.update(in, 0, read);
+						
+						//STATUS
+						updateStatusBar("Unpacking - this may take some time", 30);
+						
+						// Unzip files
+						Zip.unZip(filePath, execPath);
+						
+						
+						//STATUS
+						updateStatusBar("Getting encrpted file name", 40);
+						
+						// Get full file name
+						String fullName = ExtensionFinder.findExtention(execPath, ".des");
+						// Extract name - cut .des
+						String[] words = fullName.split("\\.");
+						final int wordsLength = words.length - 1;
+						int buffer = 0;
+						String finalFileName = "";
+						while (buffer < wordsLength) {
+							finalFileName += words[buffer] + '.';
+							buffer++;
+						}
+						
+						// Delete last character if it is a '.'
+						if (finalFileName.length() > 0 && finalFileName.charAt(finalFileName.length() - 1) == '.') {
+							finalFileName = finalFileName.substring(0, finalFileName.length() - 1);
+						}
+						
+						//STATUS
+						updateStatusBar("Reading the salt", 50);
+						
+						
+						// reading the salt
+						FileInputStream saltFis = new FileInputStream("salt.enc");
+						byte[] salt = new byte[8];
+						saltFis.read(salt);
+						saltFis.close();
+	
+						
+						//STATUS
+						updateStatusBar("Reading the iv", 60);
+						
+						// reading the iv
+						FileInputStream ivFis = new FileInputStream("iv.enc");
+						byte[] iv = new byte[16];
+						ivFis.read(iv);
+						ivFis.close();
+	
+						SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+						KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+						SecretKey tmp = factory.generateSecret(keySpec);
+						SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+	
+						
+						//STATUS
+						updateStatusBar("Decrypt file - this may take some time", 60);
+						
+						// file decryption
+						Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+						cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
+						FileInputStream fis = new FileInputStream(finalFileName + ".des");
+						FileOutputStream fos = new FileOutputStream(finalFileName);
+						byte[] in = new byte[64];
+						int read;
+						while ((read = fis.read(in)) != -1) {
+							byte[] output = cipher.update(in, 0, read);
+							if (output != null) {
+								fos.write(output);
+							}
+						}
+	
+						byte[] output = cipher.doFinal();
 						if (output != null) {
 							fos.write(output);
 						}
-					}
-
-					byte[] output = cipher.doFinal();
-					if (output != null) {
-						fos.write(output);
-					}
-
-					fis.close();
-					fos.flush();
-					fos.close();
-					System.out.println("File Decrypted.");
-
-					// Cleanup
-					String[] cryptFileNames = {"iv.enc", "salt.enc", finalFileName + ".des"};
-					for(short iter = 0; iter < 3; iter++) {
-						File cryptFiles = new File(cryptFileNames[iter]);
-						cryptFiles.delete();
-					}
+	
+						fis.close();
+						fos.flush();
+						fos.close();
+						
+						//STATUS
+						updateStatusBar("Sucess! - File Decrypted.", 100);
+	
+						// Cleanup
+						String[] cryptFileNames = {"iv.enc", "salt.enc", finalFileName + ".des"};
+						for(short iter = 0; iter < 3; iter++) {
+							File cryptFiles = new File(cryptFileNames[iter]);
+							cryptFiles.delete();
+						}
 
 					} catch (IOException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException e) {
 						// TODO Auto-generated catch block
