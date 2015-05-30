@@ -113,8 +113,9 @@ public class Crypt {
 		frmFileCrypt.getContentPane().add(btnStart);
 		
 		txtDragYourFile = new JTextArea();
-		txtDragYourFile.setFont(new Font("Arial Black", Font.PLAIN, 38));
-		txtDragYourFile.setText("Drag your file here.");
+		txtDragYourFile.setForeground(Color.DARK_GRAY);
+		txtDragYourFile.setFont(new Font("Calibri Light", Font.PLAIN, 53));
+		txtDragYourFile.setText("Drag your file here");
 		txtDragYourFile.setToolTipText("Drag your file here");
 		txtDragYourFile.setEditable(false);
 		txtDragYourFile.setBounds(13, 91, 411, 101);
